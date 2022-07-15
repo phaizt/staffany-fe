@@ -3,7 +3,6 @@ import MaterialTable from "material-table"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import Modal from "components/Modal"
 import ShiftForm from "./FormShift"
-import { Button, Box } from "@mui/material"
 import { FormType } from "./dtos/form-shift.dto"
 
 const theme = createTheme({
@@ -15,15 +14,22 @@ const theme = createTheme({
             main: "#00ab55",
         },
     },
+    components: {
+        MuiTablePagination: {
+            styleOverrides: {
+                toolbar: {
+                    flexWrap: "wrap",
+                },
+            },
+        },
+    },
 })
 
 const Index = () => {
     const tableRef = useRef()
     const [openModal, setOpenModal] = useState(false)
-    const [isEdit, setIsEdit] = useState(false)
 
-    const handleOpen = (edit: boolean) => {
-        setIsEdit(edit)
+    const handleOpen = () => {
         setOpenModal(true)
     }
 
@@ -31,11 +37,6 @@ const Index = () => {
 
     return (
         <>
-            <Box display="flex" justifyContent="end" mb={3}>
-                <Button variant="contained" onClick={() => handleOpen(false)}>
-                    Add new Shift
-                </Button>
-            </Box>
             <ThemeProvider theme={theme}>
                 <MaterialTable
                     title="Shift Data"
@@ -47,10 +48,10 @@ const Index = () => {
                     ]}
                     actions={[
                         {
-                            icon: "visibility",
+                            icon: "edit",
                             // position: "row",
-                            tooltip: "Details",
-                            onClick: (event, rowData) => handleOpen(true),
+                            tooltip: "Edit",
+                            onClick: (event, rowData) => handleOpen(),
                         },
                     ]}
                     data={(query) =>
@@ -69,6 +70,11 @@ const Index = () => {
                                 })
                         })
                     }
+                    localization={{
+                        pagination: {
+                            labelRowsPerPage: "",
+                        },
+                    }}
                     options={{
                         actionsCellStyle: {
                             // display: "flex",
@@ -83,7 +89,7 @@ const Index = () => {
                 />
             </ThemeProvider>
             <Modal open={openModal} handleClose={handleClose}>
-                <ShiftForm isEdit={isEdit} onSubmit={(val: FormType) => alert(JSON.stringify(val, null, 2))} />
+                <ShiftForm isEdit={true} onSubmit={(val: FormType) => alert(JSON.stringify(val, null, 2))} />
             </Modal>
         </>
     )

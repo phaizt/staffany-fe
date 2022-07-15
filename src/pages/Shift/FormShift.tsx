@@ -19,7 +19,7 @@ const Form = styled.form`
 
 type PropsType = {
     onSubmit: (value: FormType) => void
-    isEdit: boolean
+    isEdit?: boolean
     data?: FormType
 }
 
@@ -82,6 +82,7 @@ const MyForm: React.FC<PropsType> = (props) => {
                                 ampm={false}
                                 value={formik.values.start_time}
                                 onChange={(value) => formik.setFieldValue("start_time", value)}
+                                minutesStep={60}
                                 renderInput={(params) => <TextField {...params} />}
                             />
                             <FormHelperText error>{formik.errors.start_time}</FormHelperText>
@@ -92,6 +93,7 @@ const MyForm: React.FC<PropsType> = (props) => {
                                 ampm={false}
                                 value={formik.values.end_time}
                                 onChange={(value) => formik.setFieldValue("end_time", value)}
+                                minutesStep={60}
                                 renderInput={(params) => <TextField {...params} />}
                             />
                             <FormHelperText error>{formik.errors.end_time}</FormHelperText>
