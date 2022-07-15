@@ -33,7 +33,14 @@ const initialValues: FormType = {
 const validationSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
     date: Yup.date().required("Required"),
-    start_time: Yup.string().required("Required"),
+    start_time: Yup.string()
+        .required("Required")
+        .when("end_time", (end_time: Date) => {
+            if (end_time) {
+                return Yup.date().max(end_time, "Start Time must be before Start").typeError("Required")
+            }
+            return Yup.date()
+        }),
     end_time: Yup.string().required("Required"),
 })
 
