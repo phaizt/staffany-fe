@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from "react"
-import MaterialTable, { MTableToolbar } from "material-table"
-import { TablePagination } from "@mui/material"
+import { useState, useRef } from "react"
+import MaterialTable from "material-table"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
+import Modal from "components/Modal"
+import ShiftForm from "./FormShift"
+import { Button, Box } from "@mui/material"
+import { FormType } from "./dtos/form-shift.dto"
 
 const theme = createTheme({
     palette: {
@@ -17,32 +20,37 @@ const theme = createTheme({
 const Index = () => {
     const tableRef = useRef()
     const [openModal, setOpenModal] = useState(false)
-    const [row, setRow] = useState()
-    const [firstLoad, setFirstLoad] = useState(1)
+    const [isEdit, setIsEdit] = useState(false)
+
+    const handleOpen = (edit: boolean) => {
+        setIsEdit(edit)
+        setOpenModal(true)
+    }
 
     const handleClose = () => setOpenModal(false)
 
     return (
         <>
+            <Box display="flex" justifyContent="end" mb={3}>
+                <Button variant="contained" onClick={() => handleOpen(false)}>
+                    Add new Shift
+                </Button>
+            </Box>
             <ThemeProvider theme={theme}>
                 <MaterialTable
-                    title="Remote Data Preview"
+                    title="Shift Data"
                     columns={[
-                        {
-                            title: "Avatar",
-                            field: "avatar",
-                            render: (rowData) => <img style={{ height: 36, borderRadius: "50%" }} src={rowData.avatar} />,
-                        },
-                        { title: "Id", field: "id" },
-                        { title: "First Name", field: "first_name" },
-                        { title: "Last Name", field: "last_name" },
+                        { title: "Name", field: "first_name" },
+                        { title: "Date", field: "last_name" },
+                        { title: "Start Time", field: "last_name" },
+                        { title: "End Time", field: "last_name" },
                     ]}
                     actions={[
                         {
                             icon: "visibility",
                             // position: "row",
                             tooltip: "Details",
-                            onClick: (event, rowData) => alert(JSON.stringify(rowData)),
+                            onClick: (event, rowData) => handleOpen(true),
                         },
                     ]}
                     data={(query) =>
@@ -53,7 +61,6 @@ const Index = () => {
                             fetch(url)
                                 .then((response) => response.json())
                                 .then((result) => {
-                                    console.log(result)
                                     resolve({
                                         data: result.data,
                                         page: result.page - 1,
@@ -75,6 +82,9 @@ const Index = () => {
                     }}
                 />
             </ThemeProvider>
+            <Modal open={openModal} handleClose={handleClose}>
+                <ShiftForm isEdit={isEdit} onSubmit={(val: FormType) => alert(JSON.stringify(val, null, 2))} />
+            </Modal>
         </>
     )
 }
