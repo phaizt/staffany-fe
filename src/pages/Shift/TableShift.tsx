@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from "react"
 import MaterialTable from "material-table"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import Modal from "components/Modal"
+import { toast } from "react-toastify"
+import moment from "moment"
 import ShiftForm from "./FormShift"
 import { FormType } from "./dtos/form-shift.dto"
-import ShiftRequest from "request/shift.request"
-import moment from "moment"
+import * as ShiftRequest from "request/shift.request"
+import swal from "sweetalert"
 
 const theme = createTheme({
     palette: {
@@ -35,18 +37,59 @@ const Index = () => {
         setOpenModal(true)
     }
 
-    useEffect(() => {}, [])
+    const refreshTable = () => {
+        tableRef.current && (tableRef.current as any).onQueryChange()
+    }
 
     const handleClose = () => setOpenModal(false)
 
-    const handlePublish = (id: any) => {
-        console.log(id)
+    const handlePublish = (id: number) => {
+        swal({
+            title: "Are you sure?",
+            text: "Once published, you will not be able to revert it!",
+            icon: "warning",
+            buttons: ["Cancel", "Publish"],
+            dangerMode: true,
+        }).then((response) => {
+            if (response) {
+                ShiftRequest.publishShift(id)
+                    .then((res) => {
+                        refreshTable()
+                        toast.success(res.data.message)
+                    })
+                    .catch((err) => {
+                        toast.error(err.response.data.message)
+                    })
+            }
+        })
+    }
+
+    const handleDelete = (id: number) => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover it!",
+            icon: "warning",
+            buttons: ["Cancel", "Delete"],
+            dangerMode: true,
+        }).then((response) => {
+            if (response) {
+                ShiftRequest.deleteShift(id)
+                    .then((res) => {
+                        refreshTable()
+                        toast.success(res.data.message)
+                    })
+                    .catch((err) => {
+                        toast.error(err.response.data.message)
+                    })
+            }
+        })
     }
 
     return (
         <>
             <ThemeProvider theme={theme}>
                 <MaterialTable
+                    tableRef={tableRef}
                     title="Shift Data"
                     columns={[
                         { title: "Id", field: "id" },
@@ -54,10 +97,7 @@ const Index = () => {
                         {
                             title: "Date",
                             field: "date",
-                            render: (rowData) => {
-                                console.log(rowData)
-                                return moment(rowData.date).format("DD-MM-YYYY")
-                            },
+                            render: (rowData) => moment(rowData.date).format("DD-MM-YYYY"),
                         },
                         { title: "Start Time", field: "start_time" },
                         { title: "End Time", field: "end_time" },
@@ -72,9 +112,16 @@ const Index = () => {
                             onClick: (event, rowData) => handleOpen(),
                         }),
                         (rowData) => ({
+                            icon: "delete",
+                            // position: "row",
+                            tooltip: "Delete",
+                            hidden: rowData.is_published,
+                            onClick: (event, row) => handleDelete(rowData.id),
+                        }),
+                        (rowData) => ({
                             icon: "publish",
                             // position: "row",
-                            tooltip: "publish",
+                            tooltip: "Publish",
                             hidden: rowData.is_published,
                             onClick: (event, row) => handlePublish(rowData.id),
                         }),
@@ -90,7 +137,7 @@ const Index = () => {
                             // let url = "https://reqres.in/api/users?"
                             // url += "per_page=" + query.pageSize
                             // url += "&page=" + (query.page + 1)
-                            ShiftRequest().then((res) => {
+                            ShiftRequest.getList((query.page + 1).toString(), query.pageSize.toString()).then((res) => {
                                 resolve({
                                     data: res.data.data,
                                     page: res.data.page - 1,
@@ -112,6 +159,7 @@ const Index = () => {
                             width: "100px",
                             // marginBottom: "-1px",
                         },
+                        search: false,
                         actionsColumnIndex: -1,
                         // selection: true,
                     }}

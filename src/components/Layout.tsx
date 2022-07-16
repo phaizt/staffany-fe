@@ -18,7 +18,7 @@ const mdTheme = createTheme()
 const settings = ["Logout"]
 
 type propsType = {
-    children: JSX.Element
+    children: React.ReactNode
 }
 
 const Index:React.FC<propsType> = ({ children }) => {
