@@ -31,11 +31,12 @@ const theme = createTheme({
 
 type propsType = {
     refresh: boolean
-    date: Date | null | unknown
+    date: Date
+    setData: (value: FormType[]) => void
 }
 
 const Index: React.FC<propsType> = (props) => {
-    const { date, refresh } = props
+    const { date, refresh, setData } = props
     const tableRef = useRef()
     const [openModal, setOpenModal] = useState(false)
     const [editData, setEditData] = useState<FormType>()
@@ -139,24 +140,21 @@ const Index: React.FC<propsType> = (props) => {
                     actions={[
                         (rowData) => ({
                             icon: "edit",
-                            // position: "row",
                             tooltip: "Edit",
                             hidden: rowData.is_published,
                             onClick: (event, rowData) => handleEdit(rowData as FormType),
                         }),
                         (rowData) => ({
-                            icon: "delete",
-                            // position: "row",
-                            tooltip: "Delete",
-                            hidden: rowData.is_published,
-                            onClick: (event, row) => handleDelete(rowData.id),
-                        }),
-                        (rowData) => ({
                             icon: "publish",
-                            // position: "row",
                             tooltip: "Publish",
                             hidden: rowData.is_published,
                             onClick: (event, row) => handlePublish(rowData.id),
+                        }),
+                        (rowData) => ({
+                            icon: "delete",
+                            tooltip: "Delete",
+                            hidden: rowData.is_published,
+                            onClick: (event, row) => handleDelete(rowData.id),
                         }),
                         (rowData) => ({
                             icon: () => <>Published</>,
@@ -168,6 +166,7 @@ const Index: React.FC<propsType> = (props) => {
                     data={(query) =>
                         new Promise((resolve, reject) => {
                             ShiftRequest.getList(date as Date, (query.page + 1).toString(), query.pageSize.toString()).then((res) => {
+                                setData(res.data.data)
                                 resolve({
                                     data: res.data.data,
                                     page: res.data.page - 1,

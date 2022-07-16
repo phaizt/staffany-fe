@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, Box, FormGroup, TextField, TextFieldProps } from "@mui/material"
 import TableShift from "./TableShift"
 import Grid from "@mui/material/Grid"
@@ -13,17 +13,18 @@ import moment from "moment"
 
 const Index = () => {
     const [openModal, setOpenModal] = useState(false)
+    const [refreshTable, setRefreshTable] = useState(false)
+    const [date, setDate] = useState<Date>(moment().toDate())
     const [openModalTimeline, setOpenModalTimeline] = useState(false)
+    const [timeline, setTimeline] = useState<FormType[]>([])
+
     const handleClose = () => setOpenModal(false)
     const handleCloseTimeline = () => setOpenModalTimeline(false)
-    const [refreshTable, setRefreshTable] = useState(false)
-    const [date, setDate] = useState<Date | null | unknown>(moment())
-
     const handleOpen = () => {
         setOpenModal(true)
     }
 
-    const handleDateChange = (value: Date | null | unknown) => {
+    const handleDateChange = (value: Date) => {
         setDate(value)
     }
 
@@ -49,7 +50,7 @@ const Index = () => {
                                 value={date}
                                 label="Date"
                                 inputFormat="dd/MM/yyyy"
-                                onChange={(value) => handleDateChange(value)}
+                                onChange={(value) => handleDateChange(value as Date)}
                                 renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
                             />
                         </FormGroup>
@@ -60,11 +61,11 @@ const Index = () => {
                             Add new Shift
                         </Button>
                     </Box>
-                    <TableShift refresh={refreshTable} date={date} />
+                    <TableShift refresh={refreshTable} date={date} setData={setTimeline} />
                 </Grid>
             </Grid>
             <Modal open={openModalTimeline} handleClose={handleCloseTimeline}>
-                <Timeline />
+                <Timeline data={timeline} />
             </Modal>
 
             <Modal open={openModal} handleClose={handleClose}>

@@ -2,6 +2,7 @@ import React from "react"
 import { Typography, Box } from "@mui/material"
 import moment from "moment"
 import styled from "@emotion/styled"
+import { FormType } from "./dtos/form-shift.dto"
 
 const TimeTable = styled.table`
     white-space: nowrap;
@@ -24,30 +25,13 @@ const Line = styled.hr`
     height: 1px;
 `
 
-const Index: React.FC<{}> = () => {
+type PropsType = {
+    data: FormType[]
+}
+
+const Index: React.FC<PropsType> = (props) => {
     const today = moment().format("DD-MM-yyyy")
-    const contents = [
-        {
-            name: "Morning Shift",
-            start_time: "01:00",
-            end_time: "04:00",
-        },
-        {
-            name: "Morning Shift 2",
-            start_time: "01:00",
-            end_time: "04:00",
-        },
-        {
-            name: "Afternoon Shift",
-            start_time: "12:00",
-            end_time: "14:00",
-        },
-        {
-            name: "Evening Shift",
-            start_time: "17:00",
-            end_time: "20:00",
-        },
-    ]
+    const contents = props.data
     const hourIndex = Array.from(Array(24).keys())
     const hours = hourIndex.map((el) => moment().hours(el).format("HH"))
 
