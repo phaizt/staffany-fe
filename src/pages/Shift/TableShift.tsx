@@ -36,11 +36,9 @@ type propsType = {
 const Index: React.FC<propsType> = (props) => {
     const tableRef = useRef()
     const [openModal, setOpenModal] = useState(false)
+    const [editData, setEditData] = useState<FormType>()
     const [firstLoad, setFirstLoad] = useState(true)
-
-    const handleOpen = () => {
-        setOpenModal(true)
-    }
+    const [id, setId] = useState(0)
 
     const refreshTable = () => {
         tableRef.current && (tableRef.current as any).onQueryChange()
@@ -54,18 +52,27 @@ const Index: React.FC<propsType> = (props) => {
         }
     }, [props.refresh])
 
+    const handleEdit = (rowData: FormType) => {
+        setId(rowData.id || 0)
+        setEditData(rowData)
+        setOpenModal(true)
+    }
+
     const handleClose = () => setOpenModal(false)
 
-    // const handleSubmit = (val: FormType) => {
-    //     ShiftRequest.
-    //         .then((res) => {
-    //             refreshTable()
-    //             toast.success(res.data.message)
-    //         })
-    //         .catch((err) => {
-    //             toast.error(err.response.data.message)
-    //         })
-    // }
+    const handleSubmit = (value: FormType, reset: () => void) => {
+        if (id !== 0) {
+            ShiftRequest.update(id, value)
+                .then((res) => {
+                    refreshTable()
+                    toast.success(res.data.message)
+                    // reset()
+                })
+                .catch((err) => {
+                    toast.error(err.response.data.message)
+                })
+        }
+    }
 
     const handlePublish = (id: number) => {
         swal({
@@ -133,7 +140,7 @@ const Index: React.FC<propsType> = (props) => {
                             // position: "row",
                             tooltip: "Edit",
                             hidden: rowData.is_published,
-                            onClick: (event, rowData) => handleOpen(),
+                            onClick: (event, rowData) => handleEdit(rowData as FormType),
                         }),
                         (rowData) => ({
                             icon: "delete",
@@ -187,7 +194,7 @@ const Index: React.FC<propsType> = (props) => {
                 />
             </ThemeProvider>
             <Modal open={openModal} handleClose={handleClose}>
-                <ShiftForm isEdit={true} onSubmit={(val: FormType) => alert()} />
+                <ShiftForm isEdit={true} data={editData} onSubmit={handleSubmit} />
             </Modal>
         </>
     )

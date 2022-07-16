@@ -18,6 +18,11 @@ export const create = (data: FormType) => {
     return axios.post(`${base_url}/shift`, data)
 }
 
+export const update = (id: number, data: FormType) => {
+    const base_url = process.env.REACT_APP_API_URL
+    return axios.put(`${base_url}/shift/${id}`, data)
+}
+
 export const publishShift = (id: number) => {
     const base_url = process.env.REACT_APP_API_URL
     return axios.patch(`${base_url}/shift/publish/${id}`)

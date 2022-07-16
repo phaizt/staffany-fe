@@ -1,4 +1,5 @@
 export type FormType = {
+    id?: number
     name: string
     date: Date | null
     start_time: string | null

@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { useState, useEffect } from "react"
 import { TextField, Button, Box, Typography, TextFieldProps, Stack, FormHelperText, FormGroup } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
@@ -45,7 +45,7 @@ const validationSchema = Yup.object().shape({
 })
 
 const MyForm: React.FC<PropsType> = (props) => {
-    const { isEdit, onSubmit } = props
+    const { isEdit, onSubmit, data } = props
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: validationSchema,
@@ -56,6 +56,18 @@ const MyForm: React.FC<PropsType> = (props) => {
             onSubmit(val, () => formik.resetForm())
         },
     })
+
+    useEffect(() => {
+        if (data) {
+            const values = {
+                ...data,
+                date: moment(data.date).toDate(),
+                end_time: moment(data.end_time, "HH:mm").toString(),
+                start_time: moment(data.start_time, "HH:mm").toString(),
+            }
+            formik.setValues(values)
+        }
+    }, [data])
     return (
         <>
             <Typography variant="h5">Shift Form</Typography>
