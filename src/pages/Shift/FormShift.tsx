@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { TextField, Button, Box, Typography, TextFieldProps, Stack, FormHelperText, FormGroup } from "@mui/material"
-import { DatePicker } from "@mui/x-date-pickers/DatePicker"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { TimePicker } from "@mui/x-date-pickers/TimePicker"
+import DatePicker from "components/Datepicker"
+import TimePicker from "components/Timepicker"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import moment from "moment"
@@ -76,42 +74,40 @@ const MyForm: React.FC<PropsType> = (props) => {
                     <TextField fullWidth id="name" name="name" label="Name" value={formik.values.name} onChange={formik.handleChange} />
                     <FormHelperText error>{formik.errors.name}</FormHelperText>
                 </FormGroup>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Stack spacing={3}>
-                        <FormGroup>
-                            <DatePicker
-                                value={formik.values.date}
-                                label="Date"
-                                inputFormat="dd/MM/yyyy"
-                                onChange={(value) => formik.setFieldValue("date", value)}
-                                renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
-                            />
-                            <FormHelperText error>{formik.errors.date}</FormHelperText>
-                        </FormGroup>
-                        <FormGroup>
-                            <TimePicker
-                                label="Start Time"
-                                ampm={false}
-                                value={formik.values.start_time}
-                                onChange={(value) => formik.setFieldValue("start_time", value)}
-                                minutesStep={60}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                            <FormHelperText error>{formik.errors.start_time}</FormHelperText>
-                        </FormGroup>
-                        <FormGroup>
-                            <TimePicker
-                                label="End Time"
-                                ampm={false}
-                                value={formik.values.end_time}
-                                onChange={(value) => formik.setFieldValue("end_time", value)}
-                                minutesStep={60}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                            <FormHelperText error>{formik.errors.end_time}</FormHelperText>
-                        </FormGroup>
-                    </Stack>
-                </LocalizationProvider>
+                <Stack spacing={3}>
+                    <FormGroup>
+                        <DatePicker
+                            value={formik.values.date}
+                            label="Date"
+                            inputFormat="dd/MM/yyyy"
+                            onChange={(value) => formik.setFieldValue("date", value)}
+                            renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
+                        />
+                        <FormHelperText error>{formik.errors.date}</FormHelperText>
+                    </FormGroup>
+                    <FormGroup>
+                        <TimePicker
+                            label="Start Time"
+                            ampm={false}
+                            value={formik.values.start_time}
+                            onChange={(value) => formik.setFieldValue("start_time", value)}
+                            minutesStep={60}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        <FormHelperText error>{formik.errors.start_time}</FormHelperText>
+                    </FormGroup>
+                    <FormGroup>
+                        <TimePicker
+                            label="End Time"
+                            ampm={false}
+                            value={formik.values.end_time}
+                            onChange={(value) => formik.setFieldValue("end_time", value)}
+                            minutesStep={60}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                        <FormHelperText error>{formik.errors.end_time}</FormHelperText>
+                    </FormGroup>
+                </Stack>
                 <Box display="flex" justifyContent="end">
                     <Button color="primary" variant="contained" type="submit">
                         {isEdit ? "Update" : "Submit"}
