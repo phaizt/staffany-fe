@@ -10,6 +10,7 @@ import * as ShiftRequest from "request/shift.request"
 import { toast } from "react-toastify"
 import DatePicker from "components/Datepicker"
 import moment from "moment"
+import swal from "sweetalert"
 
 const Index = () => {
     const [openModal, setOpenModal] = useState(false)
@@ -26,6 +27,27 @@ const Index = () => {
 
     const handleDateChange = (value: Date) => {
         setDate(value)
+    }
+
+    const handlePublishWeek = () => {
+        swal({
+            title: "Are you sure to publish one week of shift?",
+            text: "Make sure to select a correct a day of week, week start from Sunday. Once published, you will not be able to revert them!",
+            icon: "warning",
+            buttons: ["Cancel", "Publish"],
+            dangerMode: true,
+        }).then((response) => {
+            if (response) {
+                ShiftRequest.publishWeekShift(moment(date).format("yyyy-MM-DD"))
+                    .then((res) => {
+                        setRefreshTable((prev) => !prev)
+                        toast.success(res.data.message)
+                    })
+                    .catch((err) => {
+                        toast.error(err.response.data.message)
+                    })
+            }
+        })
     }
 
     const handleSubmit = (value: FormType, reset: () => void) => {
@@ -54,6 +76,9 @@ const Index = () => {
                                 renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
                             />
                         </FormGroup>
+                        <Button variant="contained" color="warning" onClick={handlePublishWeek}>
+                            Publish a Week
+                        </Button>
                         <Button variant="outlined" onClick={() => setOpenModalTimeline(true)}>
                             View Timeline
                         </Button>

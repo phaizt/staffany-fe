@@ -28,6 +28,11 @@ export const publishShift = (id: number) => {
     return axios.patch(`${base_url}/shift/publish/${id}`)
 }
 
+export const publishWeekShift = (date: string) => {
+    const base_url = process.env.REACT_APP_API_URL
+    return axios.patch(`${base_url}/shift/publish?date=${date}`)
+}
+
 export const deleteShift = (id: number) => {
     const base_url = process.env.REACT_APP_API_URL
     return axios.delete(`${base_url}/shift/${id}`)
