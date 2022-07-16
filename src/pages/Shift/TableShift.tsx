@@ -29,9 +29,14 @@ const theme = createTheme({
     },
 })
 
-const Index = () => {
+type propsType = {
+    refresh: boolean
+}
+
+const Index: React.FC<propsType> = (props) => {
     const tableRef = useRef()
     const [openModal, setOpenModal] = useState(false)
+    const [firstLoad, setFirstLoad] = useState(true)
 
     const handleOpen = () => {
         setOpenModal(true)
@@ -41,7 +46,26 @@ const Index = () => {
         tableRef.current && (tableRef.current as any).onQueryChange()
     }
 
+    useEffect(() => {
+        if (firstLoad) {
+            setFirstLoad(false)
+        } else {
+            refreshTable()
+        }
+    }, [props.refresh])
+
     const handleClose = () => setOpenModal(false)
+
+    // const handleSubmit = (val: FormType) => {
+    //     ShiftRequest.
+    //         .then((res) => {
+    //             refreshTable()
+    //             toast.success(res.data.message)
+    //         })
+    //         .catch((err) => {
+    //             toast.error(err.response.data.message)
+    //         })
+    // }
 
     const handlePublish = (id: number) => {
         swal({
@@ -134,9 +158,6 @@ const Index = () => {
                     ]}
                     data={(query) =>
                         new Promise((resolve, reject) => {
-                            // let url = "https://reqres.in/api/users?"
-                            // url += "per_page=" + query.pageSize
-                            // url += "&page=" + (query.page + 1)
                             ShiftRequest.getList((query.page + 1).toString(), query.pageSize.toString()).then((res) => {
                                 resolve({
                                     data: res.data.data,
@@ -166,7 +187,7 @@ const Index = () => {
                 />
             </ThemeProvider>
             <Modal open={openModal} handleClose={handleClose}>
-                <ShiftForm isEdit={true} onSubmit={(val: FormType) => alert(JSON.stringify(val, null, 2))} />
+                <ShiftForm isEdit={true} onSubmit={(val: FormType) => alert()} />
             </Modal>
         </>
     )

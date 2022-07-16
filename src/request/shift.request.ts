@@ -1,5 +1,6 @@
 import axios from "axios"
 import moment from "moment"
+import { FormType } from "pages/Shift/dtos/form-shift.dto"
 
 export const getList = (page: string, per_page: string) => {
     const base_url = process.env.REACT_APP_API_URL
@@ -10,6 +11,11 @@ export const getList = (page: string, per_page: string) => {
     }
     const queryStr = new URLSearchParams(query).toString()
     return axios.get(`${base_url}/shift?${queryStr}`)
+}
+
+export const create = (data: FormType) => {
+    const base_url = process.env.REACT_APP_API_URL
+    return axios.post(`${base_url}/shift`, data)
 }
 
 export const publishShift = (id: number) => {

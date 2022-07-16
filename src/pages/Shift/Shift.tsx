@@ -6,15 +6,30 @@ import ShiftForm from "./FormShift"
 import { FormType } from "./dtos/form-shift.dto"
 import Modal from "components/Modal"
 import Timeline from "./Timeline"
+import * as ShiftRequest from "request/shift.request"
+import { toast } from "react-toastify"
 
 const Index = () => {
     const [openModal, setOpenModal] = useState(false)
     const [openModalTimeline, setOpenModalTimeline] = useState(false)
     const handleClose = () => setOpenModal(false)
     const handleCloseTimeline = () => setOpenModalTimeline(false)
+    const [refreshTable, setRefreshTable] = useState(false)
 
     const handleOpen = () => {
         setOpenModal(true)
+    }
+
+    const handleSubmit = (value: FormType, reset: () => void) => {
+        ShiftRequest.create(value)
+            .then((res) => {
+                setRefreshTable((prev) => !prev)
+                toast.success(res.data.message)
+                reset()
+            })
+            .catch((err) => {
+                toast.error(err.response.data.message)
+            })
     }
 
     return (
@@ -29,7 +44,7 @@ const Index = () => {
                             Add new Shift
                         </Button>
                     </Box>
-                    <TableShift />
+                    <TableShift refresh={refreshTable} />
                 </Grid>
             </Grid>
             <Modal open={openModalTimeline} handleClose={handleCloseTimeline}>
@@ -37,7 +52,7 @@ const Index = () => {
             </Modal>
 
             <Modal open={openModal} handleClose={handleClose}>
-                <ShiftForm onSubmit={(val: FormType) => alert(JSON.stringify(val, null, 2))} />
+                <ShiftForm onSubmit={handleSubmit} />
             </Modal>
         </>
     )

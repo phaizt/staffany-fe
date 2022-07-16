@@ -18,7 +18,7 @@ const Form = styled.form`
 `
 
 type PropsType = {
-    onSubmit: (value: FormType) => void
+    onSubmit: (value: FormType, reset: () => void) => void
     isEdit?: boolean
     data?: FormType
 }
@@ -53,7 +53,7 @@ const MyForm: React.FC<PropsType> = (props) => {
             const start_time = moment(values.start_time).format("HH:mm")
             const end_time = moment(values.end_time).format("HH:mm")
             const val: FormType = { ...values, start_time, end_time }
-            onSubmit(val)
+            onSubmit(val, () => formik.resetForm())
         },
     })
     return (
