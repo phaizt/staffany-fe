@@ -31,9 +31,11 @@ const theme = createTheme({
 
 type propsType = {
     refresh: boolean
+    date: Date | null | unknown
 }
 
 const Index: React.FC<propsType> = (props) => {
+    const { date, refresh } = props
     const tableRef = useRef()
     const [openModal, setOpenModal] = useState(false)
     const [editData, setEditData] = useState<FormType>()
@@ -50,7 +52,7 @@ const Index: React.FC<propsType> = (props) => {
         } else {
             refreshTable()
         }
-    }, [props.refresh])
+    }, [refresh, date])
 
     const handleEdit = (rowData: FormType) => {
         setId(rowData.id || 0)
@@ -165,7 +167,7 @@ const Index: React.FC<propsType> = (props) => {
                     ]}
                     data={(query) =>
                         new Promise((resolve, reject) => {
-                            ShiftRequest.getList((query.page + 1).toString(), query.pageSize.toString()).then((res) => {
+                            ShiftRequest.getList(date as Date, (query.page + 1).toString(), query.pageSize.toString()).then((res) => {
                                 resolve({
                                     data: res.data.data,
                                     page: res.data.page - 1,

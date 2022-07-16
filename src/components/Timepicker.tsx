@@ -4,8 +4,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { TimePicker, TimePickerProps } from "@mui/x-date-pickers/TimePicker"
 
 export default function BasicTimePicker(props: JSX.IntrinsicAttributes & TimePickerProps<unknown, unknown> & React.RefAttributes<HTMLDivElement>) {
-    const [value, setValue] = React.useState<Date | null>(null)
-
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <TimePicker {...props} />

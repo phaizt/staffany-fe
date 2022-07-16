@@ -2,10 +2,10 @@ import axios from "axios"
 import moment from "moment"
 import { FormType } from "pages/Shift/dtos/form-shift.dto"
 
-export const getList = (page: string, per_page: string) => {
+export const getList = (date: Date, page: string, per_page: string) => {
     const base_url = process.env.REACT_APP_API_URL
     const query = {
-        date: moment().format("yyyy-MM-DD"),
+        date: moment(date).format("yyyy-MM-DD"),
         page: page || "",
         per_page: per_page || "",
     }
