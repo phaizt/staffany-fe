@@ -1,9 +1,11 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import MaterialTable from "material-table"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import Modal from "components/Modal"
 import ShiftForm from "./FormShift"
 import { FormType } from "./dtos/form-shift.dto"
+import ShiftRequest from "request/shift.request"
+import moment from "moment"
 
 const theme = createTheme({
     palette: {
@@ -33,7 +35,13 @@ const Index = () => {
         setOpenModal(true)
     }
 
+    useEffect(() => {}, [])
+
     const handleClose = () => setOpenModal(false)
+
+    const handlePublish = (id: any) => {
+        console.log(id)
+    }
 
     return (
         <>
@@ -41,33 +49,54 @@ const Index = () => {
                 <MaterialTable
                     title="Shift Data"
                     columns={[
-                        { title: "Name", field: "first_name" },
-                        { title: "Date", field: "last_name" },
-                        { title: "Start Time", field: "last_name" },
-                        { title: "End Time", field: "last_name" },
+                        { title: "Id", field: "id" },
+                        { title: "Name", field: "name" },
+                        {
+                            title: "Date",
+                            field: "date",
+                            render: (rowData) => {
+                                console.log(rowData)
+                                return moment(rowData.date).format("DD-MM-YYYY")
+                            },
+                        },
+                        { title: "Start Time", field: "start_time" },
+                        { title: "End Time", field: "end_time" },
+                        { title: "End Time", field: "is_published", hidden: true },
                     ]}
                     actions={[
-                        {
+                        (rowData) => ({
                             icon: "edit",
                             // position: "row",
                             tooltip: "Edit",
+                            hidden: rowData.is_published,
                             onClick: (event, rowData) => handleOpen(),
-                        },
+                        }),
+                        (rowData) => ({
+                            icon: "publish",
+                            // position: "row",
+                            tooltip: "publish",
+                            hidden: rowData.is_published,
+                            onClick: (event, row) => handlePublish(rowData.id),
+                        }),
+                        (rowData) => ({
+                            icon: () => <>Published</>,
+                            disabled: true,
+                            hidden: !rowData.is_published,
+                            onClick: (event, rowData) => null,
+                        }),
                     ]}
                     data={(query) =>
                         new Promise((resolve, reject) => {
-                            let url = "https://reqres.in/api/users?"
-                            url += "per_page=" + query.pageSize
-                            url += "&page=" + (query.page + 1)
-                            fetch(url)
-                                .then((response) => response.json())
-                                .then((result) => {
-                                    resolve({
-                                        data: result.data,
-                                        page: result.page - 1,
-                                        totalCount: result.total,
-                                    })
+                            // let url = "https://reqres.in/api/users?"
+                            // url += "per_page=" + query.pageSize
+                            // url += "&page=" + (query.page + 1)
+                            ShiftRequest().then((res) => {
+                                resolve({
+                                    data: res.data.data,
+                                    page: res.data.page - 1,
+                                    totalCount: res.data.count,
                                 })
+                            })
                         })
                     }
                     localization={{
