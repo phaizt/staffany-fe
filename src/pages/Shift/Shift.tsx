@@ -43,7 +43,7 @@ const Index = () => {
         <>
             <Grid container spacing={2} justifyContent="center" sx={{ mb: 3, px: 2 }}>
                 <Grid item md={12} xs={12} gap={3}>
-                    <Box display="flex" justifyContent="end" mb={3} gap={3}>
+                    <Box display="flex" justifyContent="end" mb={3} gap={3} flexWrap="wrap">
                         <FormGroup>
                             <DatePicker
                                 value={date}
