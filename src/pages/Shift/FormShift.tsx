@@ -79,7 +79,7 @@ const MyForm: React.FC<PropsType> = (props) => {
                         <DatePicker
                             value={formik.values.date}
                             label="Date"
-                            inputFormat="dd/MM/yyyy"
+                            inputFormat="DD/MM/yyyy"
                             onChange={(value) => formik.setFieldValue("date", value)}
                             renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
                         />

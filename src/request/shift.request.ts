@@ -15,7 +15,8 @@ export const getList = (date: Date, page: string, per_page: string) => {
 
 export const create = (data: FormType) => {
     const base_url = process.env.REACT_APP_API_URL
-    return axios.post(`${base_url}/shift`, data)
+    const post = { ...data, date: moment(data.date).format("yyyy-MM-DD") }
+    return axios.post(`${base_url}/shift`, post)
 }
 
 export const update = (id: number, data: FormType) => {

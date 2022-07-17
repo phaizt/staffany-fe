@@ -71,7 +71,7 @@ const Index = () => {
                             <DatePicker
                                 value={date}
                                 label="Date"
-                                inputFormat="dd/MM/yyyy"
+                                inputFormat="DD/MM/yyyy"
                                 onChange={(value) => handleDateChange(value as Date)}
                                 renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => <TextField {...params} />}
                             />
