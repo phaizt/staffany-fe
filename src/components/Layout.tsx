@@ -22,7 +22,6 @@ type propsType = {
 }
 
 const Index:React.FC<propsType> = ({ children }) => {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
